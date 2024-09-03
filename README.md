@@ -49,3 +49,8 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 If npm is not recognized in Cursor's terminal, run the following command:
 $env:Path += ";C:\Program Files\nodejs"
 This adds Node.js to the PATH for the current session. You may need to run this command each time you open Cursor.
+
+Basics of Git Commit
+git add . 
+git commit -m "Parchment + Thick Strokes"
+git log -1

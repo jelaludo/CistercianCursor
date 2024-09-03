@@ -1,15 +1,25 @@
 import React from 'react';
-import './App.css';
+import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import CistercianNumeral from './CistercianNumeral';
+import Learn from './Learn';
+import './App.css';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Cistercian Numerals</h1>
-        <CistercianNumeral />
-      </header>
-    </div>
+    <Router>
+      <div className="app-container">
+        <nav>
+          <Link to="/learn" className="nav-button">Learn</Link>
+          <Link to="/" className="nav-button">Home</Link>
+          <Link to="/play" className="nav-button">Play</Link>
+        </nav>
+        <Routes>
+          <Route path="/" element={<CistercianNumeral />} />
+          <Route path="/learn" element={<Learn />} />
+          <Route path="/play" element={<div>Play page (coming soon)</div>} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

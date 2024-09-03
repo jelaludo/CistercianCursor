@@ -17,13 +17,22 @@ const CistercianNumeral: React.FC = () => {
         }
     }, [number]);
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (value === '' || (parseInt(value) >= 0 && parseInt(value) <= 9999)) {
+            setNumber(value);
+        }
+    };
+
     return (
         <div className="cistercian-numeral-container">
+            <label htmlFor="cistercian-input">Input # 0 to 9999</label>
             <input
+                id="cistercian-input"
                 type="number"
                 value={number}
-                onChange={(e) => setNumber(e.target.value)}
-                placeholder="Enter a number (0-9999)"
+                onChange={handleInputChange}
+                placeholder="0"
                 min={0}
                 max={9999}
             />
@@ -31,7 +40,6 @@ const CistercianNumeral: React.FC = () => {
                 ref={canvasRef} 
                 width={CANVAS_WIDTH} 
                 height={CANVAS_HEIGHT} 
-                style={{ border: '1px solid black' }} 
             />
         </div>
     );
