@@ -1,31 +1,72 @@
+import rough from 'roughjs/bundled/rough.esm';
+
+// Import the image
+import parchmentBackground from './assets/parchment_background.jpg';
+
+const CANVAS_SIZE = 150;
+const MARGIN = 25;
+const DRAWING_SIZE = CANVAS_SIZE - (2 * MARGIN);
+const STROKE_WIDTH = 4;
+
 export const getPointCoordinates = (point: number): [number, number] => {
     const coordinates: { [key: number]: [number, number] } = {
-        1: [25, 0],
-        2: [75, 0],
-        3: [125, 0],
-        4: [25, 50],
-        5: [75, 50],
-        6: [125, 50],
-        7: [25, 100],
-        8: [75, 100],
-        9: [125, 100],
-        10: [25, 150],
-        11: [75, 150],
-        12: [125, 150],
+        1: [0, 0],
+        2: [0.5, 0],
+        3: [1, 0],
+        4: [0, 0.33],
+        5: [0.5, 0.33],
+        6: [1, 0.33],
+        7: [0, 0.67],
+        8: [0.5, 0.67],
+        9: [1, 0.67],
+        10: [0, 1],
+        11: [0.5, 1],
+        12: [1, 1],
     };
-    return coordinates[point];
+    const [x, y] = coordinates[point];
+    return [
+        MARGIN + x * DRAWING_SIZE,
+        MARGIN + y * DRAWING_SIZE
+    ];
 };
 
-export const drawLine = (ctx: CanvasRenderingContext2D, start: number, end: number) => {
+type RoughCanvas = ReturnType<typeof rough.canvas>;
+
+const drawLine = (rc: RoughCanvas, start: number, end: number) => {
     const [x1, y1] = getPointCoordinates(start);
     const [x2, y2] = getPointCoordinates(end);
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
+    rc.line(x1, y1, x2, y2, { 
+        roughness: 1.5, 
+        strokeWidth: STROKE_WIDTH // Use the new STROKE_WIDTH constant
+    });
 };
 
-export const drawDigit = (ctx: CanvasRenderingContext2D, digit: number, position: 'units' | 'tens' | 'hundreds' | 'thousands') => {
+export const drawCistercianNumeral = (canvas: HTMLCanvasElement, num: number) => {
+    const ctx = canvas.getContext('2d')!;
+    const rc = rough.canvas(canvas);
+
+    // Load the parchment background image
+    const img = new Image();
+    img.onload = () => {
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw the parchment background
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        // Draw the main vertical line
+        drawLine(rc, 2, 11);
+
+        const digits = num.toString().padStart(4, '0').split('').map(Number);
+        drawDigit(rc, digits[0], 'thousands');
+        drawDigit(rc, digits[1], 'hundreds');
+        drawDigit(rc, digits[2], 'tens');
+        drawDigit(rc, digits[3], 'units');
+    };
+    img.src = parchmentBackground;
+};
+
+const drawDigit = (rc: RoughCanvas, digit: number, position: 'units' | 'tens' | 'hundreds' | 'thousands') => {
     const shapes: { [key: string]: { [key: number]: [number, number][] } } = {
         units: {
             1: [[2, 3]], 2: [[5, 6]], 3: [[2, 6]], 4: [[5, 3]], 5: [[2, 3], [5, 3]],
@@ -46,23 +87,5 @@ export const drawDigit = (ctx: CanvasRenderingContext2D, digit: number, position
     };
 
     const lines = shapes[position][digit] || [];
-    lines.forEach(([start, end]) => drawLine(ctx, start, end));
-};
-
-export const drawCistercianNumeral = (canvas: HTMLCanvasElement, num: number) => {
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = 2;
-
-        // Draw the main vertical line
-        drawLine(ctx, 2, 11);
-
-        const digits = num.toString().padStart(4, '0').split('').map(Number);
-        drawDigit(ctx, digits[0], 'thousands');
-        drawDigit(ctx, digits[1], 'hundreds');
-        drawDigit(ctx, digits[2], 'tens');
-        drawDigit(ctx, digits[3], 'units');
-    }
+    lines.forEach(([start, end]) => drawLine(rc, start, end));
 };
