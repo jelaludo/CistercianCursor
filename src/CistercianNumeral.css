@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+.cistercian-numeral-container {
+    position: relative;
+    min-height: 100vh; /* Ensure container takes full height */
+    padding-bottom: 60px; /* Make room for the toggle button */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: background-image 0.3s ease;
+}
+
+.mode-selector {
+    margin-bottom: 20px;
+}
+
+.mode-selector button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+.number-input {
+    margin-bottom: 20px;
+    padding: 10px;
+    font-size: 24px;
+}
+
+.cistercian-numeral {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    background-size: cover; /* Ensure the background image covers the entire div */
+    padding: 10px; /* Add padding to make it easier to read */
+}
+
+svg {
+    width: 100%;
+    height: 100%;
+}
+
+.feedback {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.correct {
+    color: green;
+}
+
+.wrong {
+    color: red;
+}
+
+.score {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+.timer {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+.high-score {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+.high-score-input {
+    margin-top: 10px;
+}
+
+.numeral-conversions {
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+.statistics {
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+.histogram {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 200px;
+    width: 100%;
+}
+
+.histogram-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 9%;
+}
+
+.histogram-bar-content {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+}
+
+.histogram-square {
+    font-size: 18px;
+}
+
+.histogram-label {
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.game-over {
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.game-over-text {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 36px;
+    color: red;
+}
+
+.learn-mode {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cistercian-digits-image {
+    max-width: 100%;
+    height: auto;
+}
+
+.learn-mode-selector {
+    margin-bottom: 20px;
+}
+
+.learn-mode-selector button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+.learn-display img {
+    max-width: 100%;
+    height: auto;
+}
+
+.learn-count {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Remove or comment out the .learn-count.parchment-bg class if it exists */
