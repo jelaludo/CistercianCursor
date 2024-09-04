@@ -1,12 +1,13 @@
 import rough from 'roughjs/bundled/rough.esm';
 
-// Import the image
+// Import the background image
 import parchmentBackground from './assets/parchment_background.jpg';
 
-const CANVAS_SIZE = 150;
-const MARGIN = 25;
+const CANVAS_SIZE = 300;
+const MARGIN = 50;
 const DRAWING_SIZE = CANVAS_SIZE - (2 * MARGIN);
-const STROKE_WIDTH = 4;
+const STROKE_WIDTH = 6;
+const CALLIGRAPHY_ANGLE = Math.PI / 4;
 
 export const getPointCoordinates = (point: number): [number, number] => {
     const coordinates: { [key: number]: [number, number] } = {
@@ -30,43 +31,75 @@ export const getPointCoordinates = (point: number): [number, number] => {
     ];
 };
 
-type RoughCanvas = ReturnType<typeof rough.canvas>;
+function drawCalligraphyLine(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number, width: number, angle: number = Math.PI / 6) {
+    const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+    const normalX = (y2 - y1) / length;
+    const normalY = (x1 - x2) / length;
 
-const drawLine = (rc: RoughCanvas, start: number, end: number) => {
+    const midX = (x1 + x2) / 2;
+    const midY = (y1 + y2) / 2;
+    const controlX = midX + (Math.random() - 0.5) * width * 2;
+    const controlY = midY + (Math.random() - 0.5) * width * 2;
+
+    ctx.beginPath();
+    ctx.moveTo(x1 + normalX * width / 2, y1 + normalY * width / 2);
+    ctx.quadraticCurveTo(controlX, controlY, x2 + normalX * width / 2, y2 + normalY * width / 2);
+    
+    // Create angled end
+    ctx.lineTo(x2 + Math.cos(angle) * width / 2, y2 + Math.sin(angle) * width / 2);
+    ctx.lineTo(x2 - normalX * width / 2, y2 - normalY * width / 2);
+    ctx.lineTo(x1 - normalX * width / 2, y1 - normalY * width / 2);
+    
+    // Create angled start
+    ctx.lineTo(x1 - Math.cos(angle) * width / 2, y1 - Math.sin(angle) * width / 2);
+    ctx.closePath();
+    ctx.fill();
+}
+
+const drawLine = (ctx: CanvasRenderingContext2D, start: number, end: number, strokeWidth: number) => {
     const [x1, y1] = getPointCoordinates(start);
     const [x2, y2] = getPointCoordinates(end);
-    rc.line(x1, y1, x2, y2, { 
-        roughness: 1.5, 
-        strokeWidth: STROKE_WIDTH // Use the new STROKE_WIDTH constant
-    });
+    drawCalligraphyLine(ctx, x1, y1, x2, y2, strokeWidth, CALLIGRAPHY_ANGLE);
 };
 
 export const drawCistercianNumeral = (canvas: HTMLCanvasElement, num: number) => {
     const ctx = canvas.getContext('2d')!;
-    const rc = rough.canvas(canvas);
+    const dpr = window.devicePixelRatio || 1;
+    
+    // Set the actual size in memory
+    canvas.width = CANVAS_SIZE * dpr;
+    canvas.height = CANVAS_SIZE * dpr;
+    
+    // Scale the context to ensure correct drawing operations
+    ctx.scale(dpr, dpr);
+    
+    // Set the "drawn" size of the canvas
+    canvas.style.width = `${CANVAS_SIZE}px`;
+    canvas.style.height = `${CANVAS_SIZE}px`;
 
-    // Load the parchment background image
+    // Load and draw the background image
     const img = new Image();
     img.onload = () => {
-        // Clear the canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        
+        // Set the fill style for the calligraphy strokes
+        ctx.fillStyle = 'black';
 
-        // Draw the parchment background
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
+        const adjustedStrokeWidth = STROKE_WIDTH * (dpr > 1 ? 1 : dpr);
+        
         // Draw the main vertical line
-        drawLine(rc, 2, 11);
+        drawLine(ctx, 2, 11, adjustedStrokeWidth);
 
         const digits = num.toString().padStart(4, '0').split('').map(Number);
-        drawDigit(rc, digits[0], 'thousands');
-        drawDigit(rc, digits[1], 'hundreds');
-        drawDigit(rc, digits[2], 'tens');
-        drawDigit(rc, digits[3], 'units');
+        drawDigit(ctx, digits[0], 'thousands', adjustedStrokeWidth);
+        drawDigit(ctx, digits[1], 'hundreds', adjustedStrokeWidth);
+        drawDigit(ctx, digits[2], 'tens', adjustedStrokeWidth);
+        drawDigit(ctx, digits[3], 'units', adjustedStrokeWidth);
     };
     img.src = parchmentBackground;
 };
 
-const drawDigit = (rc: RoughCanvas, digit: number, position: 'units' | 'tens' | 'hundreds' | 'thousands') => {
+const drawDigit = (ctx: CanvasRenderingContext2D, digit: number, position: 'units' | 'tens' | 'hundreds' | 'thousands', strokeWidth: number) => {
     const shapes: { [key: string]: { [key: number]: [number, number][] } } = {
         units: {
             1: [[2, 3]], 2: [[5, 6]], 3: [[2, 6]], 4: [[5, 3]], 5: [[2, 3], [5, 3]],
@@ -87,5 +120,5 @@ const drawDigit = (rc: RoughCanvas, digit: number, position: 'units' | 'tens' | 
     };
 
     const lines = shapes[position][digit] || [];
-    lines.forEach(([start, end]) => drawLine(rc, start, end));
+    lines.forEach(([start, end]) => drawLine(ctx, start, end, strokeWidth));
 };

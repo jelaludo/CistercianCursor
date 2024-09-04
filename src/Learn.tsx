@@ -50,9 +50,14 @@ const Learn: React.FC = () => {
     setIsCountUp(true);
   };
 
+  const handlePaceChange = (increment: number) => {
+    setPace(prev => Math.max(0.5, prev + increment));
+  };
+
   return (
     <div className="learn-container">
       <input
+        className="big-input"
         type="number"
         value={number}
         onChange={(e) => setNumber(Math.max(0, Math.min(9999, parseInt(e.target.value) || 0)))}
@@ -67,13 +72,17 @@ const Learn: React.FC = () => {
       <div className="pace-control">
         <label>
           Pace (seconds):
-          <input
-            type="number"
-            value={pace}
-            onChange={(e) => setPace(Math.max(0.1, parseFloat(e.target.value) || 0.5))}
-            step="0.1"
-            min="0.1"
-          />
+          <div className="pace-input-container">
+            <button onClick={() => handlePaceChange(-0.5)}>-</button>
+            <input
+              type="number"
+              value={pace}
+              onChange={(e) => setPace(Math.max(0.5, parseFloat(e.target.value) || 0.5))}
+              step="0.5"
+              min="0.5"
+            />
+            <button onClick={() => handlePaceChange(0.5)}>+</button>
+          </div>
         </label>
       </div>
     </div>
