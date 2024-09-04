@@ -1,12 +1,11 @@
 import rough from 'roughjs/bundled/rough.esm';
-
-// Import the background image
 import parchmentBackground from './assets/parchment_background.jpg';
 
 const CANVAS_SIZE = 300;
 const MARGIN = 50;
 const DRAWING_SIZE = CANVAS_SIZE - (2 * MARGIN);
-const STROKE_WIDTH = 6;
+const MAIN_STROKE_WIDTH = 6;
+const SMALL_STROKE_WIDTH = 48;
 const CALLIGRAPHY_ANGLE = Math.PI / 4;
 
 export const getPointCoordinates = (point: number): [number, number] => {
@@ -62,41 +61,52 @@ const drawLine = (ctx: CanvasRenderingContext2D, start: number, end: number, str
     drawCalligraphyLine(ctx, x1, y1, x2, y2, strokeWidth, CALLIGRAPHY_ANGLE);
 };
 
-export const drawCistercianNumeral = (canvas: HTMLCanvasElement, num: number) => {
+export const drawCistercianNumeral = (canvas: HTMLCanvasElement, num: number, scale: number = 1, isSmall: boolean = false) => {
     const ctx = canvas.getContext('2d')!;
     const dpr = window.devicePixelRatio || 1;
     
     // Set the actual size in memory
-    canvas.width = CANVAS_SIZE * dpr;
-    canvas.height = CANVAS_SIZE * dpr;
+    canvas.width = CANVAS_SIZE * scale * dpr;
+    canvas.height = CANVAS_SIZE * scale * dpr;
     
     // Scale the context to ensure correct drawing operations
-    ctx.scale(dpr, dpr);
+    ctx.scale(dpr * scale, dpr * scale);
     
     // Set the "drawn" size of the canvas
-    canvas.style.width = `${CANVAS_SIZE}px`;
-    canvas.style.height = `${CANVAS_SIZE}px`;
+    canvas.style.width = `${CANVAS_SIZE * scale}px`;
+    canvas.style.height = `${CANVAS_SIZE * scale}px`;
 
-    // Load and draw the background image
-    const img = new Image();
-    img.onload = () => {
-        ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        
-        // Set the fill style for the calligraphy strokes
-        ctx.fillStyle = 'black';
+    if (scale === 1 && !isSmall) {
+        // Only draw background for full-size numerals
+        const img = new Image();
+        img.onload = () => {
+            ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+            drawNumeral(ctx, num, scale, isSmall);
+        };
+        img.src = parchmentBackground;
+    } else {
+        // For scaled-down numerals, use a beige background
+        ctx.fillStyle = '#F5DEB3';
+        ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        drawNumeral(ctx, num, scale, isSmall);
+    }
+};
 
-        const adjustedStrokeWidth = STROKE_WIDTH * (dpr > 1 ? 1 : dpr);
-        
-        // Draw the main vertical line
-        drawLine(ctx, 2, 11, adjustedStrokeWidth);
+const drawNumeral = (ctx: CanvasRenderingContext2D, num: number, scale: number, isSmall: boolean) => {
+    // Set the fill style for the calligraphy strokes
+    ctx.fillStyle = 'black';
 
-        const digits = num.toString().padStart(4, '0').split('').map(Number);
-        drawDigit(ctx, digits[0], 'thousands', adjustedStrokeWidth);
-        drawDigit(ctx, digits[1], 'hundreds', adjustedStrokeWidth);
-        drawDigit(ctx, digits[2], 'tens', adjustedStrokeWidth);
-        drawDigit(ctx, digits[3], 'units', adjustedStrokeWidth);
-    };
-    img.src = parchmentBackground;
+    const baseStrokeWidth = isSmall ? SMALL_STROKE_WIDTH : MAIN_STROKE_WIDTH;
+    const adjustedStrokeWidth = baseStrokeWidth * (scale > 1 ? 1 : scale);
+    
+    // Draw the main vertical line
+    drawLine(ctx, 2, 11, adjustedStrokeWidth);
+
+    const digits = num.toString().padStart(4, '0').split('').map(Number);
+    drawDigit(ctx, digits[0], 'thousands', adjustedStrokeWidth);
+    drawDigit(ctx, digits[1], 'hundreds', adjustedStrokeWidth);
+    drawDigit(ctx, digits[2], 'tens', adjustedStrokeWidth);
+    drawDigit(ctx, digits[3], 'units', adjustedStrokeWidth);
 };
 
 const drawDigit = (ctx: CanvasRenderingContext2D, digit: number, position: 'units' | 'tens' | 'hundreds' | 'thousands', strokeWidth: number) => {

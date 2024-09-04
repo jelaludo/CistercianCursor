@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import CistercianNumeral from './CistercianNumeral';
-import Learn from './Learn';
+import CistercianGame from './CistercianGame';
+import CistercianLearn from './CistercianLearn';
 import './App.css';
 
 const App: React.FC = () => {
@@ -15,8 +16,8 @@ const App: React.FC = () => {
         </nav>
         <Routes>
           <Route path="/" element={<CistercianNumeral />} />
-          <Route path="/learn" element={<Learn />} />
-          <Route path="/play" element={<div>Play page (coming soon)</div>} />
+          <Route path="/learn" element={<CistercianLearn />} />
+          <Route path="/play" element={<CistercianGame />} />
         </Routes>
       </div>
     </Router>

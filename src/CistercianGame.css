@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body {
+    background-color: #000;
+}
+
+.cistercian-game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Press Start 2P', cursive;
+    color: white;
+    padding: 20px;
+}
+
+.start-button {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 24px;
+    padding: 15px 30px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+input[type="number"] {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 18px;
+    padding: 10px;
+    margin: 20px 0;
+    width: 200px;
+    text-align: center;
+    background-color: #333;
+    color: white;
+    border: 2px solid #4CAF50;
+}
+
+.timer {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.game-over {
+    font-size: 48px;
+    color: red;
+    margin: 20px 0;
+}
+
+.wrong-guess {
+    font-size: 18px;
+    color: red;
+    margin: 10px 0;
+}
+
+.stats {
+    text-align: left;
+    margin-top: 20px;
+}
+
+.stats p {
+    margin: 10px 0;
+}
+
+.histogram {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    height: 200px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.histogram-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.histogram-bars {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.histogram-square {
+    width: 20px;
+    height: 20px;
+    border: 1px solid white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.histogram-square.filled {
+    background-color: white;
+    color: black;
+}
+
+.histogram-label {
+    margin-top: 5px;
+}
