@@ -47,9 +47,23 @@ const CistercianGame: React.FC = () => {
         if (timerRef.current) clearInterval(timerRef.current);
     };
 
-    const handleGuess = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter' && gameStarted && !gameOver) {
-            if (parseInt(userGuess) === currentNumber) {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUserGuess(e.target.value);
+    };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        checkGuess();
+    };
+
+    const checkGuess = () => {
+        if (gameStarted && !gameOver) {
+            const guess = parseInt(userGuess);
+            if (isNaN(guess)) {
+                // Handle invalid input
+                return;
+            }
+            if (guess === currentNumber) {
                 const guessTime = (Date.now() - startTime) / 1000;
                 setCorrectGuesses(prev => prev + 1);
                 setTotalTime(prev => prev + guessTime);
@@ -121,14 +135,17 @@ const CistercianGame: React.FC = () => {
                         height={CANVAS_SIZE}
                         style={{ width: `${CANVAS_SIZE}px`, height: `${CANVAS_SIZE}px` }}
                     />
-                    <input
-                        type="number"
-                        value={userGuess}
-                        onChange={(e) => setUserGuess(e.target.value)}
-                        onKeyPress={handleGuess}
-                        placeholder="Enter your guess"
-                        disabled={gameOver}
-                    />
+                    {gameStarted && !gameOver && (
+                        <form onSubmit={handleSubmit}>
+                            <input
+                                type="number"
+                                value={userGuess}
+                                onChange={handleInputChange}
+                                placeholder="Enter your guess"
+                            />
+                            <button type="submit">Submit</button>
+                        </form>
+                    )}
                     {gameOver && (
                         <>
                             <div className="game-over">GAME OVER</div>

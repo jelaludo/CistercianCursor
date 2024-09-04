@@ -9,7 +9,7 @@
     padding: 20px;
 }
 
-h2, h3 {
+h2 {
     margin-bottom: 20px;
 }
 
@@ -42,15 +42,37 @@ canvas {
 }
 
 .small-numerals-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
     max-width: 800px;
+}
+
+.numeral-section {
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 .small-numerals-container {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 15px; /* Increased gap for better spacing */
+    gap: 15px;
+}
+
+.small-numerals-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 800px;
+}
+
+.small-numerals-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
 }
 
 .small-numeral {
@@ -60,11 +82,10 @@ canvas {
 }
 
 .small-numeral canvas {
-    border: 1px solid #4CAF50; /* Thinner border for smaller canvases */
+    border: 1px solid #4CAF50;
     margin-bottom: 5px;
 }
 
 .small-numeral span {
-    font-size: 12px; /* Smaller font size for the number labels */
-    margin-top: 5px; /* Added margin for better separation from canvas */
+    font-size: 12px;
 }
