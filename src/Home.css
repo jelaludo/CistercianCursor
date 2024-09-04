@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Press Start 2P', cursive;
+    color: white;
+    padding: 20px;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+canvas {
+    margin-bottom: 20px;
+}
+
+.current-number {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+button {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 16px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+input[type="number"] {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 16px;
+    padding: 5px;
+    width: 80px;
+    text-align: center;
+    background-color: #333;
+    color: white;
+    border: 2px solid #4CAF50;
+}
+
+.countdown-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}

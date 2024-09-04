@@ -33,6 +33,7 @@ const CistercianGame: React.FC = () => {
         setCurrentNumber(generateNewNumber());
         setHistogram(new Array(MAX_HISTOGRAM_SECONDS).fill(0));
         setLastWrongGuess(null);
+        setUserGuess('');  // Clear the user's guess
         startTimer();
     };
 
@@ -160,6 +161,11 @@ const CistercianGame: React.FC = () => {
                         <p>Correct Guesses: {correctGuesses}</p>
                         <p>Avg. Time per Guess: {correctGuesses > 0 ? (totalTime / correctGuesses).toFixed(2) : '0'} seconds</p>
                     </div>
+                    {gameOver && (
+                        <div className="play-again-container">
+                            <button onClick={startGame} className="play-again-button">Play Again</button>
+                        </div>
+                    )}
                     {gameOver && renderHistogram()}
                 </>
             )}

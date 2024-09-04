@@ -99,3 +99,31 @@ input[type="number"] {
 .histogram-label {
     margin-top: 5px;
 }
+
+.play-again-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.play-again-button {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 16px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.play-again-button:hover {
+    background-color: #45a049;
+}
+
+/* Ensure the button is visible */
+.cistercian-game-container button {
+    display: inline-block;
+    margin: 10px 0;
+}
