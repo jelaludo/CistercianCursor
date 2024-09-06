@@ -14,6 +14,7 @@ const Home: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const backgroundRef = useRef<HTMLDivElement>(null);
     const lastUpdateTimeRef = useRef(0);
+    const animationFrameRef = useRef<number | null>(null);
 
     useEffect(() => {
         // Load background image once
@@ -50,16 +51,22 @@ const Home: React.FC = () => {
             lastUpdateTimeRef.current = timestamp;
         }
         if (counting) {
-            requestAnimationFrame(updateNumber);
+            animationFrameRef.current = requestAnimationFrame(updateNumber);
         }
     };
 
     useEffect(() => {
         if (counting) {
-            requestAnimationFrame(updateNumber);
+            animationFrameRef.current = requestAnimationFrame(updateNumber);
+        } else {
+            if (animationFrameRef.current !== null) {
+                cancelAnimationFrame(animationFrameRef.current);
+            }
         }
         return () => {
-            // No need to cancel, it will stop on its own when counting becomes false
+            if (animationFrameRef.current !== null) {
+                cancelAnimationFrame(animationFrameRef.current);
+            }
         };
     }, [counting, countDirection, speed]);
 
@@ -91,6 +98,10 @@ const Home: React.FC = () => {
         setCountDirection('down');
     };
 
+    const handleStop = () => {
+        setCounting(false);
+    };
+
     return (
         <div className="home-container" ref={backgroundRef}>
             <h1>Cistercian Numerals</h1>
@@ -114,7 +125,7 @@ const Home: React.FC = () => {
                     />
                     <button onClick={startCountdown}>Countdown</button>
                 </div>
-                <button onClick={() => setCounting(false)}>Stop</button>
+                <button onClick={handleStop}>Stop</button>
                 <div className="speed-control">
                     <label htmlFor="speed">Speed (seconds):</label>
                     <input
