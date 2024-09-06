@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { drawCistercianNumeral } from './drawingModule';
+import backgroundImage from './assets/parchment_background.jpg'; // Adjust path if needed
 import './CistercianGame.css';
 
-const CANVAS_SIZE = 300;
-const MAX_HISTOGRAM_SECONDS = 10;
+const CANVAS_SIZE = 300; // Ensure this matches your existing CANVAS_SIZE
+const MAX_HISTOGRAM_SECONDS = 10; // Add this line or adjust the value as needed
 
 const CistercianGame: React.FC = () => {
     const [gameStarted, setGameStarted] = useState(false);
@@ -16,6 +17,7 @@ const CistercianGame: React.FC = () => {
     const [startTime, setStartTime] = useState(0);
     const [histogram, setHistogram] = useState<number[]>(new Array(MAX_HISTOGRAM_SECONDS).fill(0));
     const [lastWrongGuess, setLastWrongGuess] = useState<string | null>(null);
+    const [background, setBackground] = useState<HTMLImageElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -90,11 +92,32 @@ const CistercianGame: React.FC = () => {
         });
     };
 
-    useEffect(() => {
-        if (canvasRef.current && (gameStarted || gameOver)) {
-            drawCistercianNumeral(canvasRef.current, currentNumber);
+    const drawGameState = useCallback(() => {
+        if (canvasRef.current && background) {
+            const ctx = canvasRef.current.getContext('2d');
+            if (ctx) {
+                // Only draw the background if it has changed or canvas was cleared
+                if (ctx.getImageData(0, 0, 1, 1).data[3] === 0) {
+                    ctx.drawImage(background, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+                }
+                drawCistercianNumeral(canvasRef.current, currentNumber);
+            }
         }
-    }, [currentNumber, gameStarted, gameOver]);
+    }, [background, currentNumber]);
+
+    useEffect(() => {
+        const img = new Image();
+        img.src = backgroundImage;
+        img.onload = () => {
+            setBackground(img);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (background) {
+            drawGameState();
+        }
+    }, [background, currentNumber, drawGameState]);
 
     useEffect(() => {
         return () => {
