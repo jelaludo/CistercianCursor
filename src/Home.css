@@ -15,6 +15,7 @@ h1 {
 
 canvas {
     margin-bottom: 20px;
+    /* Remove any border or green frame */
 }
 
 .current-number {
@@ -33,7 +34,7 @@ button {
     font-family: 'Press Start 2P', cursive;
     font-size: 16px;
     padding: 10px 20px;
-    background-color: #4CAF50;
+    background-color: #4a4a4a; /* Change from green to a neutral color */
     color: white;
     border: none;
     cursor: pointer;
@@ -41,7 +42,7 @@ button {
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #5a5a5a; /* Change hover color */
 }
 
 .speed-control {
@@ -58,7 +59,7 @@ input[type="number"] {
     text-align: center;
     background-color: #333;
     color: white;
-    border: 2px solid #4CAF50;
+    border: 2px solid #4a4a4a; /* Change from green to a neutral color */
 }
 
 .countdown-controls {

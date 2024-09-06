@@ -1,0 +1,35 @@
+.nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    background-color: #282c34;
+    padding: 10px;
+    z-index: 1000;
+}
+
+.nav-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.nav-link:hover, .nav-link.active {
+    opacity: 1;
+}
+
+.nav-link .icon {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.nav-link .label {
+    font-size: 12px;
+}

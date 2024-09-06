@@ -4,8 +4,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: 'Press Start 2P', cursive;
-    color: white;
     padding: 20px;
 }
 
@@ -37,8 +35,8 @@ input[type="number"] {
 }
 
 canvas {
-    border: 2px solid #4CAF50;
-    margin-bottom: 20px;
+    /* Remove any green border */
+    margin-bottom: 10px;
 }
 
 .small-numerals-section {
