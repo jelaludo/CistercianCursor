@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { drawCistercianNumeral } from './drawingModule';
 import './Home.css';
+import { debounce } from 'lodash'; // You may need to install lodash
 
 const CANVAS_SIZE = 300;
 
@@ -11,36 +12,56 @@ const Home: React.FC = () => {
     const [speed, setSpeed] = useState(0.25);
     const [manualStart, setManualStart] = useState<number | ''>('');
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const backgroundRef = useRef<HTMLDivElement>(null);
+    const lastUpdateTimeRef = useRef(0);
 
     useEffect(() => {
-        if (canvasRef.current) {
-            drawCistercianNumeral(canvasRef.current, currentNumber);
+        // Load background image once
+        if (backgroundRef.current) {
+            backgroundRef.current.style.backgroundImage = 'url(path/to/your/background-image.jpg)';
+            backgroundRef.current.style.backgroundSize = 'cover';
+            backgroundRef.current.style.backgroundPosition = 'center';
         }
+    }, []); // Empty dependency array ensures this runs only once on mount
+
+    const memoizedDrawing = useMemo(() => {
+        if (canvasRef.current) {
+            return () => drawCistercianNumeral(canvasRef.current!, currentNumber);
+        }
+        return () => {}; // Return a no-op function if canvas ref is null
     }, [currentNumber]);
 
     useEffect(() => {
-        if (counting) {
-            startCounting();
-        } else {
-            stopCounting();
+        if (canvasRef.current) {
+            const ctx = canvasRef.current.getContext('2d');
+            if (ctx) {
+                ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+                memoizedDrawing(); // Call the memoized drawing function
+            }
         }
-        return () => stopCounting();
-    }, [counting, countDirection, speed]);
+    }, [memoizedDrawing]);
 
-    const startCounting = () => {
-        if (timerRef.current) clearInterval(timerRef.current);
-        timerRef.current = setInterval(() => {
+    const updateNumber = (timestamp: number) => {
+        if (timestamp - lastUpdateTimeRef.current >= speed * 1000) {
             setCurrentNumber(prev => {
                 const newNumber = countDirection === 'up' ? prev + 1 : prev - 1;
                 return newNumber < 0 ? 0 : newNumber;
             });
-        }, speed * 1000);
+            lastUpdateTimeRef.current = timestamp;
+        }
+        if (counting) {
+            requestAnimationFrame(updateNumber);
+        }
     };
 
-    const stopCounting = () => {
-        if (timerRef.current) clearInterval(timerRef.current);
-    };
+    useEffect(() => {
+        if (counting) {
+            requestAnimationFrame(updateNumber);
+        }
+        return () => {
+            // No need to cancel, it will stop on its own when counting becomes false
+        };
+    }, [counting, countDirection, speed]);
 
     const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newSpeed = parseFloat(e.target.value);
@@ -71,7 +92,7 @@ const Home: React.FC = () => {
     };
 
     return (
-        <div className="home-container">
+        <div className="home-container" ref={backgroundRef}>
             <h1>Cistercian Numerals</h1>
             <canvas 
                 ref={canvasRef} 
